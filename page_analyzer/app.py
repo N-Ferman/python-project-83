@@ -57,6 +57,7 @@ def add_url():
     flash('Страница успешно добавлена', 'success')
     return redirect(url_for('show_url', id=url_id))
 
+
 def get_db_connection():
     database_url = os.getenv('DATABASE_URL')
     return psycopg2.connect(database_url)
@@ -66,7 +67,8 @@ def get_db_connection():
 def show_url(id):
     conn = get_db_connection()
     with conn.cursor() as cur:
-        cur.execute("SELECT id, name, created_at FROM urls WHERE id = %s", (id,))
+        cur.execute("SELECT id, name, created_at FROM urls WHERE id = %s", 
+                    (id,))
         url_record = cur.fetchone()
 
         if not url_record:

@@ -11,4 +11,6 @@ test:
 	uv run pytest tests
 lint:
 	uv run ruff check .
+build:
+	./build.sh
 
