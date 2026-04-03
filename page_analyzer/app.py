@@ -82,7 +82,7 @@ def show_url(id):
         checks = cur.fetchall()
 
     conn.close()
-    return render_template('urls/show.html', url=url_record, checks=checks)
+    return render_template('url.html', url=url_record, checks=checks)
 
 @app.post('/urls/<int:id>/checks')
 def check_url(id):
@@ -127,4 +127,4 @@ def get_urls():
         cur.execute("SELECT id, name FROM urls ORDER BY created_at DESC")
         urls = cur.fetchall()
     conn.close()
-    return render_template('urls/index.html', urls=urls)
+    return render_template('urls.html', urls=urls)

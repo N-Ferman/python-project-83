@@ -5,10 +5,10 @@
 <div class="row justify-content-center">
   <div class="col-md-8">
     <h1 class="mb-4">Анализатор страниц</h1>
-    <form method="post" action="/analyze" class="mb-4">
+    <form method="post" action="{{ url_for('add_url') }}" class="mb-4">
       <div class="input-group">
-        <input type="text" name="url" class="form-control" placeholder="Введите URL для анализа" required>
-        <button type="submit" class="btn btn-primary">Анализировать</button>
+        <input type="text" name="url" class="form-control" placeholder="https://www.example.com" required>
+        <button type="submit" class="btn btn-primary">Проверить</button>
       </div>
     </form>
   </div>
