@@ -1,15 +1,14 @@
-import os
-
 from datetime import datetime
+import os
 from urllib.parse import urlparse
 
+from bs4 import BeautifulSoup
+from dotenv import load_dotenv
+from flask import Flask, flash, redirect, render_template, request, url_for
+from page_analyzer.parser import get_seo_data
 import psycopg2
 import requests
 import validators
-from dotenv import load_dotenv
-from flask import Flask, flash, redirect, render_template, request, url_for
-from bs4 import BeautifulSoup
-from page_analyzer.parser import get_seo_data
 
 load_dotenv()
 
@@ -20,6 +19,7 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 @app.route('/')
 def home():
     return render_template('index.html')
+
 
 @app.post('/urls')
 def add_url():
@@ -61,6 +61,7 @@ def get_db_connection():
     database_url = os.getenv('DATABASE_URL')
     return psycopg2.connect(database_url)
 
+
 @app.get('/urls/<int:id>')
 def show_url(id):
     conn = get_db_connection()
@@ -87,6 +88,7 @@ def show_url(id):
     conn.close()
     return render_template('url.html', url=url_record, checks=checks)
 
+
 @app.post('/urls/<int:id>/checks')
 def check_url(id):
     conn = get_db_connection()
@@ -111,13 +113,13 @@ def check_url(id):
             cur.execute(
                 """
                 INSERT INTO url_checks (
-    url_id,
-    status_code,
-    h1,
-    title,
-    description,
-    created_at
-)
+                url_id,
+                status_code,
+                h1,
+                title,
+                description,
+                created_at
+                )
 VALUES (%s, %s, %s, %s, %s, %s)
                 """,
                 (id,
@@ -136,6 +138,7 @@ VALUES (%s, %s, %s, %s, %s, %s)
         conn.close()
 
     return redirect(url_for('show_url', id=id))
+
 
 @app.get('/urls')
 def get_urls():
