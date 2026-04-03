@@ -8,6 +8,8 @@ import requests
 import validators
 from dotenv import load_dotenv
 from flask import Flask, flash, redirect, render_template, request, url_for
+from bs4 import BeautifulSoup
+from page_analyzer.parser import get_seo_data
 
 load_dotenv()
 
@@ -101,14 +103,28 @@ def check_url(id):
     try:
         response = requests.get(url_name, timeout=10)
         response.raise_for_status()
+        soup = BeautifulSoup(response.text, 'html.parser')
+        seo = get_seo_data(soup)
 
         with conn.cursor() as cur:
             cur.execute(
                 """
-                INSERT INTO url_checks (url_id, status_code, created_at)
-                VALUES (%s, %s, %s)
+                INSERT INTO url_checks (
+    url_id,
+    status_code,
+    h1,
+    title,
+    description,
+    created_at
+)
+VALUES (%s, %s, %s, %s, %s, %s)
                 """,
-                (id, response.status_code, datetime.now())
+                (id,
+        response.status_code,
+        seo['h1'],
+        seo['title'],
+        seo['description'],
+        datetime.now(),)
             )
             conn.commit()
 
@@ -124,7 +140,25 @@ def check_url(id):
 def get_urls():
     conn = get_db_connection()
     with conn.cursor() as cur:
-        cur.execute("SELECT id, name FROM urls ORDER BY created_at DESC")
+        cur.execute(
+            """
+            SELECT
+                urls.id,
+                urls.name,
+                checks.created_at,
+                checks.status_code
+            FROM urls
+            LEFT JOIN (
+            SELECT DISTINCT ON (url_id)
+                    url_id,
+                    status_code,
+                    created_at
+                FROM url_checks
+                ORDER BY url_id, created_at DESC
+            ) AS checks ON checks.url_id = urls.id
+            ORDER BY urls.id DESC
+            """
+        )
         urls = cur.fetchall()
     conn.close()
     return render_template('urls.html', urls=urls)
