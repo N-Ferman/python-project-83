@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Сайт: {{ url[1] }}</h1>
+
+<div class="mb-3">
+  <table class="table table-bordered" data-test="url">
+    <tbody>
+      <tr>
+        <th>ID</th>
+        <td>{{ url[0] }}</td>
+      </tr>
+      <tr>
+        <th>Имя</th>
+        <td>{{ url[1] }}</td>
+      </tr>
+      <tr>
+        <th>Дата создания</th>
+        <td>{{ url[2] }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="mb-3">
+  <form method="post" action="{{ url_for('check_url', id=url[0]) }}">
+    <input type="submit" class="btn btn-primary" value="Запустить проверку">
+  </form>
+</div>
+
+<h2>Проверки</h2>
+
+<table class="table table-bordered" data-test="checks">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Код ответа</th>
+      <th>h1</th>
+      <th>title</th>
+      <th>description</th>
+      <th>Дата создания</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for check in checks %}
+      <tr>
+        <td>{{ check[0] }}</td>
+        <td>{{ check[1] }}</td>
+        <td>{{ (check[2] or '')[:200] }}{% if check[2] and check[2]|length > 200 %}...{% endif %}</td>
+        <td>{{ (check[3] or '')[:200] }}{% if check[3] and check[3]|length > 200 %}...{% endif %}</td>
+        <td>{{ (check[4] or '')[:200] }}{% if check[4] and check[4]|length > 200 %}...{% endif %}</td>
+        <td>{{ check[5] }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

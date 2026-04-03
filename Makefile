@@ -2,16 +2,13 @@ PORT ?= 8000
 start:
 	uv run gunicorn -w 5 -b 0.0.0.0:$(PORT) page_analyzer:app
 install:
-	uv synс 	
+	uv sync 
 dev:
-	uv run flask --debug --app page_analyzer:app run
-
-	
+	uv run flask --debug --app page_analyzer:app run	
 run:
 	uv run python example.py
 test:
 	uv run pytest tests
 lint:
 	uv run ruff check .
-format:
-	uv run black . --line-length 127
+
