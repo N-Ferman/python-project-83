@@ -78,8 +78,6 @@ def test_add_url_with_invalid_url_returns_422(client):
 
 
 def test_add_url_with_existing_url_redirects(client, monkeypatch):
-    
-
     cursor = FakeCursor(fetchone_values=[(7,)])
     conn = FakeConnection(cursor)
 
@@ -93,8 +91,6 @@ def test_add_url_with_existing_url_redirects(client, monkeypatch):
 
 
 def test_add_url_with_new_url_saves_and_redirects(client, monkeypatch):
-    
-
     cursor = FakeCursor(fetchone_values=[None, (15,)])
     conn = FakeConnection(cursor)
 
@@ -109,8 +105,6 @@ def test_add_url_with_new_url_saves_and_redirects(client, monkeypatch):
 
 
 def test_get_urls_returns_page(client, monkeypatch):
-    
-
     cursor = FakeCursor(
         fetchall_values=[
             [
@@ -129,8 +123,6 @@ def test_get_urls_returns_page(client, monkeypatch):
 
 
 def test_show_url_returns_page(client, monkeypatch):
-    
-
     cursor = FakeCursor(
         fetchone_values=[
             (1, 'https://example.com', '2026-04-06 10:00:00'),
@@ -152,8 +144,6 @@ def test_show_url_returns_page(client, monkeypatch):
 
 
 def test_check_url_saves_check_result(client, monkeypatch):
-    
-
     cursor = FakeCursor(fetchone_values=[('https://example.com',)])
     conn = FakeConnection(cursor)
 
