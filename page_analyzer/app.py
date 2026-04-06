@@ -1,14 +1,15 @@
 from datetime import datetime
 import os
-from urllib.parse import urlparse
 
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from flask import Flask, flash, redirect, render_template, request, url_for
 from page_analyzer.parser import get_seo_data
-import psycopg2
 import requests
 import validators
+
+from database import get_db_connection
+from url_normalizer import normalize_url
 
 load_dotenv()
 
@@ -33,8 +34,7 @@ def add_url():
         flash('Некорректный URL', 'danger')
         return render_template('index.html'), 422
 
-    parsed_url = urlparse(url_from_form)
-    normalized_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
+    normalized_url = normalize_url(url_from_form)
 
     conn = get_db_connection()
     with conn.cursor() as cur:
@@ -58,17 +58,14 @@ def add_url():
     return redirect(url_for('show_url', id=url_id))
 
 
-def get_db_connection():
-    database_url = os.getenv('DATABASE_URL')
-    return psycopg2.connect(database_url)
-
-
 @app.get('/urls/<int:id>')
 def show_url(id):
     conn = get_db_connection()
     with conn.cursor() as cur:
-        cur.execute("SELECT id, name, created_at FROM urls WHERE id = %s", 
-                    (id,))
+        cur.execute(
+            "SELECT id, name, created_at FROM urls WHERE id = %s",
+            (id,)
+        )
         url_record = cur.fetchone()
 
         if not url_record:
@@ -115,21 +112,23 @@ def check_url(id):
             cur.execute(
                 """
                 INSERT INTO url_checks (
-                url_id,
-                status_code,
-                h1,
-                title,
-                description,
-                created_at
+                    url_id,
+                    status_code,
+                    h1,
+                    title,
+                    description,
+                    created_at
                 )
-VALUES (%s, %s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s)
                 """,
-                (id,
-        response.status_code,
-        seo['h1'],
-        seo['title'],
-        seo['description'],
-        datetime.now(),)
+                (
+                    id,
+                    response.status_code,
+                    seo['h1'],
+                    seo['title'],
+                    seo['description'],
+                    datetime.now(),
+                )
             )
             conn.commit()
 
@@ -155,7 +154,7 @@ def get_urls():
                 checks.status_code
             FROM urls
             LEFT JOIN (
-            SELECT DISTINCT ON (url_id)
+                SELECT DISTINCT ON (url_id)
                     url_id,
                     status_code,
                     created_at
@@ -166,5 +165,6 @@ def get_urls():
             """
         )
         urls = cur.fetchall()
+
     conn.close()
     return render_template('urls.html', urls=urls)
