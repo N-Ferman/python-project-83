@@ -83,7 +83,11 @@ def test_add_url_with_existing_url_redirects(client, monkeypatch):
 
     monkeypatch.setattr(app_module, 'get_db_connection', lambda: conn)
 
-    response = client.post('/urls', data={'url': 'https://example.com/path'}, follow_redirects=False)
+    response = client.post(
+        '/urls', 
+        data={'url': 'https://example.com/path'}, 
+        follow_redirects=False
+        )
 
     assert response.status_code == 302
     assert response.headers['Location'].endswith('/urls/7')
@@ -96,7 +100,11 @@ def test_add_url_with_new_url_saves_and_redirects(client, monkeypatch):
 
     monkeypatch.setattr(app_module, 'get_db_connection', lambda: conn)
 
-    response = client.post('/urls', data={'url': 'https://example.com/path?query=1'}, follow_redirects=False)
+    response = client.post(
+        '/urls', 
+        data={'url': 'https://example.com/path?query=1'}, 
+        follow_redirects=False
+        )
 
     assert response.status_code == 302
     assert response.headers['Location'].endswith('/urls/15')
@@ -129,7 +137,14 @@ def test_show_url_returns_page(client, monkeypatch):
         ],
         fetchall_values=[
             [
-                (1, 200, 'Example H1', 'Example Title', 'Example Description', '2026-04-06 10:05:00'),
+                (
+                    1, 
+                    200, 
+                    'Example H1', 
+                    'Example Title', 
+                    'Example Description', 
+                    '2026-04-06 10:05:00'
+                    ),
             ]
         ],
     )
@@ -153,7 +168,11 @@ def test_check_url_saves_check_result(client, monkeypatch):
         'get',
         lambda url, timeout=10: SimpleNamespace(
             status_code=200,
-            text='<html><head><title>Test</title><meta name="description" content="Desc"></head><body><h1>H1</h1></body></html>',
+            text=(
+                '<html><head><title>Test</title>'
+                '<meta name="description" content="Desc"></head>'
+                '<body><h1>H1</h1></body></html>'
+            ),
             raise_for_status=lambda: None,
         ),
     )
