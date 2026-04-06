@@ -14,6 +14,6 @@ lint:
 build:
 	./build.sh
 test-coverage:
-	uv run pytest --cov=gendiff --cov-report=xml:coverage.xml
-check: 
-	lint test-coverage
+	uv run pytest --cov=page_analyzer --cov-report=xml:coverage.xml
+
+check: lint test-coverage
