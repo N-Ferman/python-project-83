@@ -15,4 +15,5 @@ build:
 	./build.sh
 test-coverage:
 	uv run pytest --cov=gendiff --cov-report=xml:coverage.xml
-
+check: 
+	lint test-coverage
