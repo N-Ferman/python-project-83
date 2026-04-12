@@ -12,10 +12,5 @@ lint:
 	uv run ruff check .
 build:
 	./build.sh
-test:
-	PYTHONPATH=. uv run pytest tests
-
-test-coverage:
-	PYTHONPATH=. uv run pytest --cov=page_analyzer --cov-report=xml:coverage.xml
 
 check: lint test-coverage
