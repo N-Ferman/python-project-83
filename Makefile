@@ -13,3 +13,5 @@ lint:
 build:
 	./build.sh
 
+check:
+	make lint
