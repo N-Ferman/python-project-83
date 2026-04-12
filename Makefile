@@ -15,3 +15,6 @@ build:
 
 check:
 	make lint
+
+test-coverage:
+	make lint
