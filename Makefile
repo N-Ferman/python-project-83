@@ -13,4 +13,3 @@ lint:
 build:
 	./build.sh
 
-check: lint test-coverage
