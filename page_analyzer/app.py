@@ -1,15 +1,15 @@
-from datetime import datetime
 import os
+from datetime import datetime
 
+import requests
+import validators
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from flask import Flask, flash, redirect, render_template, request, url_for
-import requests
-import validators
 
 from page_analyzer.database import get_db_connection
-from page_analyzer.url_normalizer import normalize_url
 from page_analyzer.parser import get_seo_data
+from page_analyzer.url_normalizer import normalize_url
 
 load_dotenv()
 
